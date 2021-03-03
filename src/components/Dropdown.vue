@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown">
+  <div class="dropdown" ref="dropdownRef">
     <a
       href="#"
       class="btn btn-outline-light my-2 dropdown-toggle"
@@ -17,7 +17,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import useClickOutside from "../common/useClickOutside";
+
+import { defineComponent, ref, watch } from "vue";
 
 export default defineComponent({
   name: "Dropdown",
@@ -32,9 +34,17 @@ export default defineComponent({
     function toggleShowDropDown() {
       isShowdropDown.value = !isShowdropDown.value;
     }
+    const dropdownRef = ref<null | HTMLElement>(null);
+    const isClickOutSide = useClickOutside(dropdownRef);
+    watch(isClickOutSide, () => {
+      if (isShowdropDown.value && isClickOutSide.value) {
+        isShowdropDown.value = false;
+      }
+    });
     return {
       isShowdropDown,
       toggleShowDropDown,
+      dropdownRef,
     };
   },
 });
